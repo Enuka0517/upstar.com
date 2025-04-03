@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Upstar</title>
+    <style>
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+            background-color: #000;
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .space {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -2;
+        }
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="10" cy="10" r="0.5" fill="white"/><circle cx="20" cy="30" r="0.8" fill="white"/><circle cx="50" cy="70" r="0.3" fill="white"/><circle cx="80" cy="40" r="0.6" fill="white"/><circle cx="90" cy="90" r="0.4" fill="white"/></svg>') repeat;
+            animation: twinkle 5s linear infinite;
+            z-index: -1;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        .earth {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            right: -50px;
+            top: 50px;
+            background: radial-gradient(circle at 30% 30%, #1fa2ff, #1f4037);
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(31, 162, 255, 0.5);
+            z-index: -1;
+            opacity: 0.8;
+        }
+        .moon-surface {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(to top, #3a3a3a, #7d7d7d), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="5" fill="%23555"/><circle cx="50" cy="30" r="7" fill="%23444"/><circle cx="70" cy="10" r="4" fill="%23666"/><circle cx="30" cy="50" r="6" fill="%23333"/><circle cx="80" cy="60" r="8" fill="%23555"/></svg>');
+            background-blend-mode: multiply;
+            z-index: 1;
+        }
+        .header {
+            padding: 20px;
+            text-align: center;
+            z-index: 10;
+        }
+        h1 {
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            margin-bottom: 10px;
+            font-style: oblique;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .subtitle {
+            color: #A7A7A7;
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+        }
+        .rocket-container {
+            position: relative;
+            width: 200px;
+            height: 400px;
+            margin: 20px auto;
+            z-index: 5;
+        }
+        .rocket {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #FF5E62 0%, #FF5E62 25%, #FF9966 25%, #FF9966 50%, #FFCC33 50%, #FFCC33 75%, #4ECDC4 75%, #4ECDC4 100%);
+            border-radius: 20px 20px 5px 5px;
+            z-index: 2;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        .window {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: #A7E0FF;
+            border-radius: 50%;
+            top: 120px;
+            left: 60px;
+            z-index: 3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid #333;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(167, 224, 255, 0.5);
+        }
+        .avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #FFDBAC;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .eyes {
+            display: flex;
+            width: 60%;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .eye {
+            width: 15px;
+            height: 15px;
+            background: #333;
+            border-radius: 50%;
+        }
+        .mouth {
+            width: 30px;
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+        }
+        .rocket-part {
+            position: absolute;
+            width: 100%;
+            height: 25%;
+            z-index: 4;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .rocket-part:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .part-1 {
+            top: 0;
+        }
+        .part-2 {
+            top: 25%;
+        }
+        .part-3 {
+            top: 50%;
+        }
+        .part-4 {
+            top: 75%;
+        }
+        .part-label {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px black;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .label-1 {
+            top: 10%;
+        }
+        .label-2 {
+            top: 35%;
+        }
+        .label-3 {
+            top: 60%;
+        }
+        .label-4 {
+            top: 85%;
+        }
+        .customize-btn {
+            background: #FF9A00;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 20px;
+            font-family: 'Comic Sans MS', cursive;
+            position: relative;
+            z-index: 10;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .customize-btn:hover {
+            background: #FF8000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        .customizer-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+        }
+        .customizer-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #FF9A00;
+            width: 90%;
+            max-width: 400px;
+        }
+        .customizer-content h2 {
+            color: #FFD700;
+            text-align: center;
+            margin-top: 0;
+        }
+        .customization-options {
+            margin: 20px 0;
+        }
+        .option-group {
+            margin-bottom: 15px;
+        }
+        .option-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #A7E0FF;
+        }
+        .option-group select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            background: #333;
+            color: white;
+            border: 1px solid #FF9A00;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .modal-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            font-family: 'Comic Sans MS', cursive;
+        }
+        .save-btn {
+            background: #4ECDC4;
+            color: #000;
+        }
+        .cancel-btn {
+            background: #FF5E62;
+            color: white;
+        }
+        .flame {
+            position: absolute;
+            width: 60px;
+            height: 0;
+            background: linear-gradient(to top, #FF9A00, #FF5E62, transparent);
+            bottom: -20px;
+            left: 70px;
+            border-radius: 0 0 30px 30px;
+            z-index: 1;
+            transition: height 0.5s;
+        }
+        .test-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+        }
+        .test-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 2px solid #4ECDC4;
+        }
+        .test-content h2 {
+            color: #FFD700;
+            text-align: center;
+            margin-top: 0;
+        }
+        .test-question {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+        }
+        .test-options {
+            margin-left: 20px;
+        }
+        .test-options label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .test-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .test-btn {
+            padding: 8px 16px;
+            border-radius: 5px;
+            background: #FF9A00;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .close-test {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #FF5E62;
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 99;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="space"></div>
+    <div class="stars"></div>
+    <div class="earth"></div>
+    <div class="moon-surface"></div>
+    <div class="modal-overlay" id="modalOverlay"></div>
+
+    <div class="header">
+        <h1>Upstar</h1>
+        <div class="subtitle">Star path for your future</div>
+    </div>
+
+    <div class="rocket-container">
+        <div class="flame" id="flame"></div>
+        <div class="rocket"></div>
+        <div class="window">
+            <div class="avatar" id="avatar" aria-label="Your astronaut avatar">
+                <div class="eyes">
+                    <div class="eye" role="presentation"></div>
+                    <div class="eye" role="presentation"></div>
+                </div>
+                <div class="mouth" role="presentation"></div>
+            </div>
+        </div>
+
+        <div class="rocket-part part-1" onclick="openTestModal('love')" aria-label="What You Love section"></div>
+        <div class="rocket-part part-2" onclick="openTestModal('good')" aria-label="What You're Good At section"></div>
+        <div class="rocket-part part-3" onclick="openTestModal('world')" aria-label="What World Needs section"></div>
+        <div class="rocket-part part-4" onclick="openTestModal('paid')" aria-label="What You Can Be Paid For section"></div>
+
+        <div class="part-label label-1">What You Love</div>
+        <div class="part-label label-2">What You're Good At</div>
+        <div class="part-label label-3">What World Needs</div>
+        <div class="part-label label-4">What You Can Be Paid For</div>
+    </div>
+
+    <button class="customize-btn" onclick="openCustomizer()" aria-label="Customize astronaut">Customize Astronaut</button>
+
+    <!-- Customizer Modal -->
+    <div class="customizer-modal" id="customizerModal">
+        <div class="customizer-content">
+            <h2>Customize Your Astronaut</h2>
+            <div class="customization-options">
+                <div class="option-group">
+                    <label for="skinTone">Skin Tone:</label>
+                    <select id="skinTone">
+                        <option value="#FFDBAC">Light</option>
+                        <option value="#E0AC69">Medium</option>
+                        <option value="#8D5524">Dark</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label for="eyeColor">Eye Color:</label>
+                    <select id="eyeColor">
+                        <option value="#333">Black</option>
+                        <option value="#0066CC">Blue</option>
+                        <option value="#009933">Green</option>
+                        <option value="#993300">Brown</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label for="mouthType">Mouth Expression:</label>
+                    <select id="mouthType">
+                        <option value="5px">Smile</option>
+                        <option value="10px">Big Smile</option>
+                        <option value="2px">Neutral</option>
+                        <option value="15px 15px 0 0">Open Mouth</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" onclick="closeCustomizer()">Cancel</button>
+                <button class="modal-btn save-btn" onclick="saveCustomization()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ikigai Test Modals -->
+    <div id="loveTest" class="test-modal">
+        <div class="test-content">
+            <button class="close-test" onclick="closeTestModal('love')" aria-label="Close test">&times;</button>
+            <h2>What You Love</h2>
+            <div class="test-question">
+                <p>1. When you have free time, what activities do you naturally gravitate toward?</p>
+                <div class="test-options">
+                    <label><input type="radio" name="q1" value="a"> Creative pursuits (art, writing, music)</label>
+                    <label><input type="radio" name="q1" value="b"> Social activities with friends/family</label>
+                    <label><input type="radio" name="q1" value="c"> Learning new things or reading</label>
+                    <label><input type="radio" name="q1" value="d"> Physical activities or sports</label>
+                </div>
+            </div>
+            <div class="test-question">
+                <p>2. What topics could you spend hours discussing without getting bored?</p>
+                <div class="test-options">
+                    <label><input type="radio" name="q2" value="a"> Arts and culture</label>
+                    <label><input type="radio" name="q2" value="b"> Relationships and personal growth</label>
+                    <label><input type="radio" name="q2" value="c"> Science, technology, or philosophy</label>
+                    <label><input type="radio" name="q2" value="d"> Practical skills or hands-on projects</label>
+                </div>
+            </div>
+            <div class="test-question">
+                <p>3. What kind of work would you do even if you weren't paid for it?</p>
+                <div class="test-options">
+                    <label><input type="radio" name="q3" value="a"> Something creative or artistic</label>
+                    <label><input type="radio" name="q3" value="b"> Helping or serving others</label>
+                    <label><input type="radio" name="q3" value="c"> Solving complex problems</label>
+                    <label><input type="radio" name="q3" value="d"> Building or fixing things</label>
+                </div>
+            </div>
+            <div class="test-nav">
+                <button class="test-btn" onclick="closeTestModal('love')">Save Answers</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="goodTest" class="test-modal">
+        <div class="test-content">
+            <button class="close-test" onclick="closeTestModal('good')" aria-label="Close test">&times;</button>
+            <h2>What You're Good At</h2>
+            <div class="test-question">
+                <p>4. What skills do people often compliment you on?</p>
+                <div class="test-options">
+                    <label><input type="radio" name="q4" value="a"> Artistic or creative abilities</label>
+                    <label><input type="radio" name="q4" value="b"> People skills and emotional intelligence</label>
+                    <label><input type="radio" name="q4" value="c"> Analytical or technical skills</label>
+                    <label><input type="radio" name="q4" value="d"> Practical or physical skills</label>
+                </div>
+            </div>
+            <div class="test-question">
+                <p>5. What tasks do you find easier than most people?</p>
+                <div class="test-options">
+                    <label><input type="radio" name="q5" value="a"> Coming up with original ideas</label>
+                    <label><input type="radio" name="q5" value="b"> Understanding people's feelings</label>
+                    <label><input type="radio" name="q5" value="c"> Understanding complex systems</label>
+                    <label><input type="radio" name="q5" value="d"> Working with your hands</label>
+                </div>
+            </div>
+            <div class="test-question">
+                <p>6. What subjects did you excel at in school (or would have if given the chance)?</p>
+                <div class="test-options">
+                    <label><input type="radio" name="q6" value="a"> Arts, music, or literature</label>
+                    <label><input type="radio" name="q6" value="b"> Psychology or social sciences</label>
+                    <label><input type="radio" name="q6" value="c"> Math, science, or technology</label>
+                    <label><input type="radio" name="q6" value="d"> Vocational or physical education</label>
+                </div>
+            </div>
+            <div class="test-nav">
+                <button class="test-btn" onclick="closeTestModal('good')">Save Answers</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="worldTest" class="test-modal">
+        <div class="test-content">
+            <button class="close-test" onclick="closeTestModal('world')" aria-label="Close test">&times;</button>
+            <h2>What the World Needs</h2>
+            <div class="test-question">
+                <p>7. What social or global issues are you most passionate about?</p>
+                <div class="test-options">
+                    <label><input type="radio" name="q7" value="a"> Cultural preservation or artistic expression</label>
+                    <label><input type="radio" name="q7" value="b"> Social justice or community building</label>
+                    <label><input type="radio" name="q7" value="c"> Technological or scientific advancement</label>
+                    <label><input type="radio" name="q7" value="d"> Environmental or practical solutions</label>
+                </div>
+            </div>
+            <div class="test-question">
+                <p>8. How would you most like to contribute to your community?</p>
+                <div class="test-options">
+                    <label><input type="radio" name="q8" value="a"> Through creative or cultural contributions</label>
+                    <label><input type="radio" name="q8" value="b"> Through direct service or support</label>
+                    <label><input type="radio" name="q8" value="c"> Through innovation or problem-solving</label>
+                    <label><input type="radio" name="q8" value="d"> Through practical help or labor</label>
+                </div>
+            </div>
+            <div class="test-question">
+                <p>9. What problems do you see that you wish someone would solve?</p>
+                <div class="test-options">
+                    <label><input type="radio" name="q9" value="a"> Lack of beauty or creativity in daily life</label>
+                    <label><input type="radio" name="q9" value="b"> Social isolation or lack of connection</label>
+                    <label><input type="radio" name="q9" value="c"> Inefficient systems or outdated methods</label>
+                    <label><input type="radio" name="q9" value="d"> Physical needs going unmet</label>
+                </div>
+            </div>
+            <div class="test-nav">
+                <button class="test-btn" onclick="closeTestModal('world')">Save Answers</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="paidTest" class="test-modal">
+        <div class="test-content">
+            <button class="close-test" onclick="closeTestModal('paid')" aria-label="Close test">&times;</button>
+            <h2>What You Can Be Paid For</h2>
+            <div class="test-question">
+                <p>10. What jobs have you enjoyed most in the past (or think you would enjoy)?</p>
+                <div class="test-options">
+                    <label><input type="radio" name="q10" value="a"> Creative or artistic roles</label>
+                    <label><input type="radio" name="q10" value="b"> Helping or caregiving roles</label>
+                    <label><input type="radio" name="q10" value="c"> Analytical or technical roles</label>
+                    <label><input type="radio" name="q10" value="d"> Hands-on or practical roles</label>
+                </div>
+            </div>
+            <div class="test-question">
+                <p>11. What skills do you have that people would pay for?</p>
+                <div class="test-options">
+                    <label><input type="radio" name="q11" value="a"> Artistic or creative skills</label>
+                    <label><input type="radio" name="q11" value="b"> Interpersonal or service skills</label>
+                    <label><input type="radio" name="q11" value="c"> Technical or specialized knowledge</label>
+                    <label><input type="radio" name="q11" value="d"> Practical or trade skills</label>
+                </div>
+            </div>
+            <div class="test-question">
+                <p>12. What type of work environment suits you best?</p>
+                <div class="test-options">
+                    <label><input type="radio" name="q12" value="a"> Flexible, creative space</label>
+                    <label><input type="radio" name="q12" value="b"> People-oriented, collaborative</label>
+                    <label><input type="radio" name="q12" value="c"> Structured, intellectually challenging</label>
+                    <label><input type="radio" name="q12" value="d"> Active, hands-on, practical</label>
+                </div>
+            </div>
+            <div class="test-nav">
+                <button class="test-btn" onclick="closeTestModal('paid')">Save Answers</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Improved modal management
+        const modalOverlay = document.getElementById('modalOverlay');
+       
+        function openCustomizer() {
+            document.getElementById('customizerModal').style.display = 'block';
+            modalOverlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+       
+        function closeCustomizer() {
+            document.getElementById('customizerModal').style.display = 'none';
+            modalOverlay.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+       
+        function saveCustomization() {
+            const avatar = document.getElementById('avatar');
+            const eyes = avatar.querySelectorAll('.eye');
+            const mouth = avatar.querySelector('.mouth');
+           
+            const skinTone = document.getElementById('skinTone').value;
+            const eyeColor = document.getElementById('eyeColor').value;
+            const mouthType = document.getElementById('mouthType').value;
+           
+            if (skinTone && eyeColor && mouthType) {
+                avatar.style.backgroundColor = skinTone;
+                eyes.forEach(eye => { eye.style.backgroundColor = eyeColor; });
+                mouth.style.borderRadius = mouthType;
+               
+                // Save to localStorage
+                localStorage.setItem('avatarCustomization', JSON.stringify({
+                    skinTone,
+                    eyeColor,
+                    mouthType
+                }));
+               
+                closeCustomizer();
+            }
+        }
+
+        // Load saved customization
+        function loadCustomization() {
+            const saved = localStorage.getItem('avatarCustomization');
+            if (saved) {
+                const { skinTone, eyeColor, mouthType } = JSON.parse(saved);
+                document.getElementById('skinTone').value = skinTone;
+                document.getElementById('eyeColor').value = eyeColor;
+                document.getElementById('mouthType').value = mouthType;
+                saveCustomization(); // Apply the saved settings
+            }
+        }
+
+        // Test modal functions
+        function openTestModal(section) {
+            document.getElementById(section + 'Test').style.display = 'block';
+            modalOverlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+           
+            const flame = document.getElementById('flame');
+            flame.style.height = '50px';
+            setTimeout(() => { flame.style.height = '0'; }, 500);
+        }
+
+        function closeTestModal(section) {
+            document.getElementById(section + 'Test').style.display = 'none';
+            modalOverlay.style.display = 'none';
+            document.body.style.overflow = '';
+           
+            // Save answers
+            const questions = document.querySelectorAll(`#${section}Test input[type="radio"]:checked`);
+            const answers = Array.from(questions).map(q => q.value);
+           
+            if (answers.length > 0) {
+                localStorage.setItem(`${section}TestAnswers`, JSON.stringify(answers));
+            }
+        }
+
+        // Close modals when clicking outside
+        modalOverlay.addEventListener('click', function() {
+            document.querySelectorAll('.customizer-modal, .test-modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+            this.style.display = 'none';
+            document.body.style.overflow = '';
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.customizer-modal, .test-modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+                modalOverlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Rocket launch function
+        function launchRocket() {
+            const rocketContainer = document.querySelector('.rocket-container');
+            rocketContainer.style.transition = 'transform 5s ease-in';
+            rocketContainer.style.transform = 'translateY(-100vh)';
+            setTimeout(() => {
+                alert("Rocket launched! Showing your Ikigai results...");
+                // Show results page with Ikigai intersection
+            }, 5000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCustomization();
+        });
+    </script>
+</body>
